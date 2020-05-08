@@ -9,5 +9,5 @@ db.serialize(() => {
         date_of_birth INTEGER NOT NULL, 
         biography TEXT NOT NULL, 
         is_currently_employed INTEGER DEFAULT 1)`);
-})
+});
 
