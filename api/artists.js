@@ -51,10 +51,17 @@ artistsRouter.put('/:artistId', (req, res, next) =>{
     const name = req.body.artist.name;
     const dateOfBirth = req.body.artist.dateOfBirth;
     const biography = req.body.artist.biography;
+    const isCurrentlyEmployed = req.body.artist.is_currently_employed;
 
     if (!name || !dateOfBirth || !biography) {
          return res.sendStatus(400);
     }
+
+    const sql = `UPDATE Artists SET name = ${name}, date_of_Birth = ${dateOfBirth}, biography = ${biography}, is_currently_employed =${isCurrentlyEmployed} WHERE Artists.id = $artistsId`
+    
+    db.run(sql, error => {
+        next(error);
+    });
 });
 
 
