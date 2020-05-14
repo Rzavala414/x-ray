@@ -71,7 +71,7 @@ artistsRouter.put('/:artistId', (req, res, next) =>{
 });
 
 artistsRouter.delete('/:artistsId', (res, req, next) => {
-   const sql = `UPDATE Artists SET is_currently_employed = 0`
+   const sql = `UPDATE Artists SET is_currently_employed = 0 WHERE Artists.id = ${req.params.artistsId}`
     db.run(sql, error => {
         if(error){
             next(error);
