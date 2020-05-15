@@ -19,6 +19,10 @@ seriesRouter.param('/seriesId', (req, res, next, id) => {
     });
 });
 
+seriesRouter.get('/', (req, res, next) => {
+
+});
+
 seriesRouter.get('/:seriesId', (req, res, next) => {
 
     db.all(`SELECT * FROM Series WHERE id = ${req.body.series.id}`, (error, series) =>{
@@ -40,7 +44,7 @@ seriesRouter.post('/', (req, res, next) => {
         res.sendStatus(400);
     }else{
         
-       db.run(`INSERT INTO Series Values(name, description)`, error =>{
+       db.run(`INSERT INTO Series Values(${req.body.series.description}, ${req.body.series.description})`, error =>{
            
         if(error){
              next(error);
@@ -61,14 +65,35 @@ seriesRouter.post('/', (req, res, next) => {
 });
 
 seriesRouter.put('/', (req, res, next) => {
+    const name = req.body.series.name;
+    const description = req.body.series.description;
+    const id = req.body.series.id
+
+    if(!name || !description){
+        res.statusCode(400);
+    }else{
+        db.run(`UPDATE Series WHERE id = ${id} SET name =${name}, description = ${description}`, error => {
+            if(error){
+                next(error);
+            }else{
+                db.get(`SELECT * FROM Series WHERE id = ${id}`, (error, series) => {
+
+                    if(error){
+                        next(error);
+                    }else{
+                        res.status(201).json({series: series});
+                    }
+
+                });
+            }
+        });
+    }
 
 });
 
-// seriesRouter.put('/', (req, res, next) => {
 
-// });
 
-// seriesRouter.delete('/', (req, res, next) => {
+// seriesRouter.delete('/:seriesId', (req, res, next) => {
 
 // });
 
