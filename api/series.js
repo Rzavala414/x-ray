@@ -21,7 +21,7 @@ seriesRouter.param('/seriesId', (req, res, next, id) => {
 
 seriesRouter.get('/:seriesId', (req, res, next) => {
 
-    db.all('SELECT * FROM Series', (error, series) =>{
+    db.all(`SELECT * FROM Series WHERE id = ${req.body.series.id}`, (error, series) =>{
         if(error){
             next(error);
         }else{
@@ -32,15 +32,39 @@ seriesRouter.get('/:seriesId', (req, res, next) => {
 
 });
 
-// seriesRouter.get('/', (req, res, next) => {
+seriesRouter.post('/', (req, res, next) => {
+    const name = req.body.series.name;
+    const description = req.body.series.description;
+    
+    if(!name || !description){
+        res.sendStatus(400);
+    }else{
+        
+       db.run(`INSERT INTO Series Values(name, description)`, error =>{
+           
+        if(error){
+             next(error);
+           }else{
+                db.get(`SELECT * FROM Series WHERE id = ${req.body.series.id}`, (error,series) =>{
 
-// });
+                    if(error){
+                        next(error);
+                    }else{
+                        res.status(201).json({series: series});
+                    }
+
+                });
+           }
+
+       });
+    }
+});
+
+seriesRouter.put('/', (req, res, next) => {
+
+});
 
 // seriesRouter.put('/', (req, res, next) => {
-
-// });
-
-// seriesRouter.post('/', (req, res, next) => {
 
 // });
 
