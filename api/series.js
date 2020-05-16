@@ -23,6 +23,16 @@ seriesRouter.param('/seriesId', (req, res, next, id) => {
 
 seriesRouter.use('/:seriesId/issues', issuesRouter);
 
+issuesRouter.get('/', (req, res, next) =>{
+    db.all(`SELECT * FROM Issue`, (error, issues)=> {
+        if(error){
+            next(error);
+        }else{
+            res.json({issues: issues})
+        }
+    });
+});
+
 seriesRouter.get('/', (req, res, next) => {
     db.all(`SELECT * FROM Series`, (error, series)=> {
         if(error){
