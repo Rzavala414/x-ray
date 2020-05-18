@@ -7,10 +7,11 @@ issuesRouter.param('/issueId', (req, res, next, issueId) =>{
     db.get('SELECT * FROM Issue WHERE Issue.id = $issueId', {$issueId: issueId}, (error, issue) =>{
         if(error){
             next(error);
-        }else if(!issue){
-            res.sendStatus(404);
+        }else if(issue){
+            next();
         }else{
-            req.issue = issue;
+            res.sendStatus(404);
+            
         }
     })
 });
