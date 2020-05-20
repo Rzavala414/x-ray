@@ -4,7 +4,7 @@ const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
 artistsRouter.param('artistsId', (req, res, next, ArtistsId) => {
-    db.get(`SELECT * FROM Artists WHERE id = ${ArtistsId}`, (err, artists) => {
+    db.get(`SELECT * FROM Artist WHERE id = ${ArtistsId}`, (err, artists) => {
         if (err) {
             next(err);
           } else if (artist) {
@@ -17,7 +17,7 @@ artistsRouter.param('artistsId', (req, res, next, ArtistsId) => {
 });
 
 artistsRouter.get('/', (req, res, next) =>{
-    db.all(`SELECT * FROM Artists WHERE is_currently_employed = 1`,
+    db.all(`SELECT * FROM Artist WHERE is_currently_employed = 1`,
         (err, artists) => {
             if(err){
                 next(err);
