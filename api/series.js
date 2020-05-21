@@ -59,31 +59,32 @@ seriesRouter.post('/', (req, res, next) => {
     
 });
 
-seriesRouter.put('/', (req, res, next) => {
+seriesRouter.put('/:seriesId', (req, res, next) => {
     const name = req.body.series.name;
     const description = req.body.series.description;
-    const id = req.body.series.id
+    const seriesId = req.params.seriesId;
 
     if(!name || !description){
-        res.statusCode(400);
-    }else{
-        db.run(`UPDATE Series WHERE id = ${id} SET name =${name}, description = ${description}`, error => {
+        return res.sendStatus(400);
+    }
+        const values = {
+            
+            $name: name,
+            $description: description,
+            $seriesId: seriesId
+        }
+
+        db.run(`UPDATE Series SET name = $name, description = $description WHERE Series.id = $seriesId`, values, error => {
             if(error){
                 next(error);
-            }else{
-                db.get(`SELECT * FROM Series WHERE id = ${id}`, (error, series) => {
+            }
+                db.get(`SELECT * FROM Series WHERE Series.id = $seriesId`,{$seriesId:seriesId}, (error, series) => {
 
-                    if(error){
-                        next(error);
-                    }else{
-                        res.status(201).json({series: series});
-                    }
+                        res.status(200).json({series: series});
 
                 });
-            }
+            
         });
-    }
-
 });
 
 
