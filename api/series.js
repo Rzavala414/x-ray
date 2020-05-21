@@ -45,12 +45,12 @@ seriesRouter.post('/', (req, res, next) => {
         return res.sendStatus(400);
     }else{
         
-       db.run(`INSERT INTO Series Values(${req.body.series.description}, ${req.body.series.description})`, error =>{
+       db.run(`INSERT INTO Series (name, description) Values(${name}, ${description})`, error =>{
            
         if(error){
              next(error);
            }else{
-                db.get(`SELECT * FROM Series WHERE id = ${req.body.series.id}`, (error,series) =>{
+                db.get(`SELECT * FROM Series WHERE Series.id = ${this.lastID}`, function(error,series){
 
                     if(error){
                         next(error);
