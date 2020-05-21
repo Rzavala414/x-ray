@@ -43,26 +43,20 @@ seriesRouter.post('/', (req, res, next) => {
     
     if(!name || !description){
         return res.sendStatus(400);
-    }else{
+    }
         
-       db.run(`INSERT INTO Series (name, description) Values(${name}, ${description})`, error =>{
+       db.run(`INSERT INTO Series (name, description) VALUES ($name, $description)`, {$name:name, $description:description}, function(error){
            
         if(error){
              next(error);
            }else{
-                db.get(`SELECT * FROM Series WHERE Series.id = ${this.lastID}`, function(error,series){
-
-                    if(error){
-                        next(error);
-                    }else{
+                db.get(`SELECT * FROM Series WHERE Series.id = ${this.lastID}`, (error,series) => {
                         res.status(201).json({series: series});
-                    }
-
                 });
            }
 
        });
-    }
+    
 });
 
 seriesRouter.put('/', (req, res, next) => {
