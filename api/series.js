@@ -1,24 +1,24 @@
 const express = require('express');
 const seriesRouter = express.Router();
-const issuesRouter = require('./issues.js');
-seriesRouter.use('/:seriesId/issues', issuesRouter);
+
 const sqlite3 = require('sqlite3');
-const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite')
+const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
-seriesRouter.param('/seriesId', (req, res, next, id) => {
+const issuesRouter = require('./issues.js');
 
-    db.get(`SELECT * FROM Series WHERE id = ${id}`, (error, series) => {
-
-        if(error){
-            next(error);
-        }else if(series){
-            req.series = series;
-            next();
-        }else{
-            res.sendStatus(404);
-        }
-
-    });
+seriesRouter.param('seriesId', (req, res, next, seriesId) => {
+  const sql = 'SELECT * FROM Series WHERE Series.id = $seriesId';
+  const values = {$seriesId: seriesId};
+  db.get(sql, values, (error, series) => {
+    if (error) {
+      next(error);
+    } else if (series) {
+      req.series = series;
+      next();
+    } else {
+      res.sendStatus(404);
+    }
+  });
 });
 
 seriesRouter.use('/:seriesId/issues', issuesRouter);
@@ -28,22 +28,13 @@ seriesRouter.get('/', (req, res, next) => {
         if(error){
             next(error);
         }else{
-            res.json({series: series})
+            res.status(200).json({series: series})
         }
     });
 });
 
 seriesRouter.get('/:seriesId', (req, res, next) => {
-
-    db.all(`SELECT * FROM Series WHERE id = ${req.body.series.id}`, (error, series) =>{
-        if(error){
-            next(error);
-        }else{
-
-            res.status(200).json({series: series});
-        }
-    });
-
+    res.status(200).json({series: req.series});
 });
 
 seriesRouter.post('/', (req, res, next) => {
@@ -51,7 +42,7 @@ seriesRouter.post('/', (req, res, next) => {
     const description = req.body.series.description;
     
     if(!name || !description){
-        res.sendStatus(400);
+        return res.sendStatus(400);
     }else{
         
        db.run(`INSERT INTO Series Values(${req.body.series.description}, ${req.body.series.description})`, error =>{
