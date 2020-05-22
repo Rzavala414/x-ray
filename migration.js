@@ -19,7 +19,7 @@ db.serialize(() => {
     )`);
 
     db.run('CREATE TABLE IF NOT EXISTS `Issue` ( ' +
-    '`id` INTEGER NOT NULL, ' +
+    '`idjjj` INTEGER NOT NULL, ' +
     '`name` TEXT NOT NULL, ' +
     '`issue_number` INTEGER NOT NULL, ' +
     '`publication_date` TEXT NOT NULL, ' +

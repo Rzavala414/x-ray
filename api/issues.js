@@ -1,5 +1,5 @@
 const express = require('express');
-const issuesRouter = express.Router({merge: true});
+const issuesRouter = express.Router({mergeParams: true});
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
@@ -46,7 +46,7 @@ issuesRouter.post('/', (req, res, next) => {
                 return res.sendStatus(400);
             }
             
-                const sql = `INSERT INTO Issue (name, issue_number, publication_date, artist_id, series_id) VALUES($name,$issueNumber,$publicationDate,$artistId,$seriesId)`;
+                const sql = `INSERT INTO Issue (name, issue_number, publication_date, artist_id, series_id) VALUES($name, $issueNumber, $publicationDate, $artistId, $seriesId)`;
 
                 const values = {
                     $name: name,
@@ -61,7 +61,7 @@ issuesRouter.post('/', (req, res, next) => {
                         next(error);
                     } else{
                         db.get(`SELECT * FROM Issue WHERE Issue.id =${this.lastID}`, (error, issue)=>{
-                            res.tatus(200).json({issue: issue})
+                            res.status(201).json({issue: issue})
                         })
                     }
                 })
@@ -89,7 +89,7 @@ issuesRouter.put('/:issueId', (req, res, next) => {
 
                 const sql = `UPDATE Issue SET name = $name, issue_number = $issueNumber, 
                 publication_date = $publicationDate, artist_id = $artistId WHERE Issue.id = $issueId`;
-                
+
                 const values = {
                     $name:name,
                     $issueNumber:issueNumber,
