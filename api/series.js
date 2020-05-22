@@ -88,7 +88,6 @@ seriesRouter.put('/:seriesId', (req, res, next) => {
 });
 
 
-
 seriesRouter.delete('/:seriesId', (req, res, next) => {
     const issueSql = `SELECT * FROM Issue WHERE Issue.series_id = ${req.params.seriesId}`;
     db.get(issueSql, (error,issue) =>{
